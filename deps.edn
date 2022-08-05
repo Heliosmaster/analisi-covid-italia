@@ -1,0 +1,12 @@
+{:deps {io.github.nextjournal/clerk {:mvn/version "0.9.513"
+                                     #_#_ :local/root "../clerk"}
+        org.clojure/data.csv        {:mvn/version "1.0.0"}
+        cheshire/cheshire           {:mvn/version "5.10.0"}
+        metosin/jsonista            {:mvn/version "0.2.7"}}
+ :paths ["."]
+ :aliases
+ {:nextjournal/clerk
+  {:exec-fn   nextjournal.clerk/build-static-app!
+   :exec-args {:paths   ["index.clj"
+                         "src/analysis.clj"]
+               :bundle? false}}}}
