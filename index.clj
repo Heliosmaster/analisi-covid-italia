@@ -172,7 +172,7 @@
                        :showticklabels true}
               :yaxis  {:automargin true}}}))
 
-;; ## Analisi
+;; ## Analisi dati nazionali
 
 ;; ### Positivi
 
@@ -250,7 +250,13 @@
   (into {} (map (fn [[k v]] [k (float (/ v 100000))]) population)))
 
 
-;; ## Analisi Regioni
+;; ## Preparazione dei dataset locali
+
+;; Andiamo ora ad analizzare alcuni dati regionali e provinciali. La scelte delle regioni e province considerate e'
+;; puramente arbitraria
+
+;; Definiamo ora una mappa da regione (o provincia) a un colore da usare in tutti i seguenti grafici, in modo da essere
+;; coerenti e riuscire a confrontare le varie regioni/province nei grafici
 
 (def regions-config
   {"Lombardia"      "black"
@@ -274,18 +280,23 @@
    "Rimini"       "skyblue"})
 
 
+;; Definiamo ora i dati regionali ripulendo i dataset iniziali e applicando una trasformazione analoga
+;; a quella fatta per i dati nazionali.
+
 (defn region-data [region-name]
   (->> regional-data
        (filter #(= (:denominazione_regione %) region-name))
        (map #(select-keys % selected-keys))
-       (finalize-data)
-       ))
+       (finalize-data)))
 
 (def data-by-region
   (->>
     (keys regions-config)
     (map (fn [r] [r (region-data r)]))
     (into {})))
+
+
+;; Ed effettuiamo lo stesso anche per i dati provinciali
 
 (defn province-data [province-name]
   (->>
@@ -296,11 +307,12 @@
     (finalize-data)))
 
 
-
 (def data-by-province
   (->> (keys provinces-config)
        (map (fn [r] [r (province-data r)]))
        (into {})))
+
+;; Definiamo ora una funzione `plot-local-data` che useremo per tutti i grafici seguenti
 
 (defn plot-local-data [boundary {:keys [key by-100k? average last] :as _opts}]
   (clerk/plotly
@@ -327,17 +339,25 @@
      :layout {:xaxis {:autotick   true
                       :automargin true}}}))
 
+;; ## Regioni
+
+;; ### Positivi
+
 (plot-local-data :regions
                  {:key      :nuovi-casi
                   :by-100k? true
                   :average  7
                   :last     90})
 
+;; ### Tamponi
+
 (plot-local-data :regions
                  {:key      #(or (:tamponi_test_molecolare %) (:tamponi %))
                   :by-100k? true
                   :average  7
                   :last     90})
+
+;; ### Ospedalizzati / TI
 
 (plot-local-data :regions
                  {:key      :totale-ospedalizzati
@@ -357,7 +377,9 @@
                   :average  7
                   :last     180})
 
-;; ## Analisi Province
+;; ## Province
+
+;; ### Positivi
 
 (plot-local-data :provinces
                  {:key      :nuovi-casi
@@ -365,5 +387,7 @@
                   :average  7
                   :last     120})
 
+
+;;
 
 (java.util.Date.)
