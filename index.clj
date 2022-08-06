@@ -17,15 +17,13 @@
 
 ;; Scarichiamo i dati dalle fonti ufficiali della protezione civile.
 
-
-#_(def data (slurp "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json"))
-#_(def regioni (slurp "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json"))
-#_(def province (slurp "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-province.json"))
-
 (do
-  (def data (slurp "data.json"))
-  (def regions (slurp "data_regioni.json"))
-  (def provinces (slurp "data_province.json"))
+  (def data (slurp "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json"))
+  (def regions (slurp "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json"))
+  (def provinces (slurp "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-province.json"))
+  #_(def data (slurp "data.json"))
+  #_(def regions (slurp "data_regioni.json"))
+  #_(def provinces (slurp "data_province.json"))
   (def italy-population (slurp "italy-population.csv"))
   (def national-data (json/parse-string data true))
   (def regional-data (json/parse-string regions true))
